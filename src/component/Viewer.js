@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
+import { useParams } from 'react-router-dom';
 
 const Container = styled.div`
   width: 100%;
@@ -22,23 +23,32 @@ const Image = styled.img`
   margin-right:auto;
 `;
 
+
 const Viewer = () => {
   const [imageList, setImageList] = useState([]);
-
+  const [title, setTitle]=useState([]);
+  const params=useParams();
   useEffect(() => {
-    axios.get('/dummy/oomuroke.json').then((response) => {
-      setImageList(response.data);
+    axios.get(`http://localhost:8080/episode/${params.episodeId}`)
+    .then((response) => {
+      setTitle(response.data.title);
+      axios.get(response.data.jsonUrl).then((response)=>{
+        setImageList(response.data);
+      });
     });
   }, []);
 
   return (
+    <div>
     <Container>
+      <h1>{title}</h1>
       <ImageList>
         {imageList.map((image, index) => (
             <Image src={image} />
         ))}
       </ImageList>
     </Container>
+    </div>
   );
 };
 

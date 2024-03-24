@@ -1,8 +1,13 @@
-import Viewer from './component/Viewer'
+import Header from './component/Header';
+import Router from './component/Router';
+
 const App = () => {
 
   return (
-    <Viewer> </Viewer>
+    <div>
+      <Header></Header>
+      <Router></Router>
+      </div>
   );
 };
 
