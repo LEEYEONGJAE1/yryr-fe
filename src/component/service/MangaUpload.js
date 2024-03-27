@@ -28,7 +28,7 @@ const MangaUpload = () => {
 
     const uploadFile = () => {
         const region = "ap-northeast-2";
-        const bucket = "yuruyuri";
+        const bucket = process.env.S3_BUCKET_NAME;
         if(title.length===0) return;
 
         AWS.config.update({
