@@ -5,7 +5,6 @@ const App = () => {
 
   return (
     <div>
-      <Header></Header>
       <Router></Router>
       </div>
   );

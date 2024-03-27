@@ -17,7 +17,7 @@ const MangaList = () => {
             <h2>만화 리스트</h2>
             {mangaList.map((manga) => (
                 <div>
-                    <Link to={`/manga/${manga.mangaId}`}> {manga.title} </Link>
+                    <Link to={`/view/manga/${manga.mangaId}`}> {manga.title} </Link>
                 </div>
             ))}
         </div>

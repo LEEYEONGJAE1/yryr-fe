@@ -1,19 +1,27 @@
 import {BrowserRouter, Routes, Route} from 'react-router-dom';
 import Viewer from './Viewer';
-import MangaList from './MangaList';
-import EpisodeList from './EpisodeList';
+import MangaList from './list/MangaList';
+import EpisodeList from './list/EpisodeList';
 import Main  from './Main';
-import Upload from './Upload';
-
+import ArtistUpload from './service/ArtistUpload';
+import MangaUpload from './service/MangaUpload';
+import EpisodeUpload from './service/EpisodeUpload';
+import Header from './Header';
 const Router = () => {
     return (
       <BrowserRouter>
+          <Header></Header>
           <Routes>
             <Route path="/" element={<Main />} />
-            <Route path="/manga/upload" element={<Upload />} />
-            <Route path="/manga/list" element={<MangaList />} />
-            <Route path="/manga/:mangaId" element={<EpisodeList/>}/>
-            <Route path="/episode/:episodeId" element={<Viewer />} />
+
+            <Route path="/view" element={<MangaList/>}/>
+            <Route path="/view/manga/list" element={<MangaList />} />
+            <Route path="/view/manga/:mangaId" element={<EpisodeList/>}/>
+            <Route path="/view/episode/:episodeId" element={<Viewer />} />
+            
+            <Route path="/upload/artist/list" element={<ArtistUpload />} />
+            <Route path="/upload/artist/:artistId" element= {<MangaUpload /> } />
+            <Route path="/upload/episode/:mangaId" element={<EpisodeUpload />} />
           </Routes>
       </BrowserRouter>
     );
