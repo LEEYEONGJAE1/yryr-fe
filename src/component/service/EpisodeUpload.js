@@ -41,8 +41,8 @@ const EpisodeUpload = () => {
 
         const upload = new AWS.S3.ManagedUpload({
             params: {
-                Bucket: 'yuruyuri', // 버킷 이름
-                Key: `mangafile/${manga.title}/${zipfile.name}`, // 유저 아이디
+                Bucket: 'yuruyuri', 
+                Key: `mangafile/${manga.title}/${zipfile.name}`,
                 Body: zipfile, // 파일 객체
             },
         });
@@ -72,7 +72,7 @@ const EpisodeUpload = () => {
 
     return (
         <div>
-        <h2>만화: {manga.name}</h2>
+        <h2>만화: {manga.title}</h2>
         <p>에피소드 이미지들을 압축해서 업로드해주세요. 보는 순서대로 이미지 이름을 지정해주세요. (사전순)</p>
         <input type="file" accept=".zip" onChange={onFileChange} />
         <h2>에피소드 제목: {title}</h2>

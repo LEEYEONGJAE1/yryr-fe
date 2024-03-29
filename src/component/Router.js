@@ -1,5 +1,5 @@
 import {BrowserRouter, Routes, Route} from 'react-router-dom';
-import Viewer from './Viewer';
+import Viewer from './service/Viewer';
 import MangaList from './list/MangaList';
 import EpisodeList from './list/EpisodeList';
 import Main  from './Main';
