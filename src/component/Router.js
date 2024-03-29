@@ -5,8 +5,10 @@ import EpisodeList from './list/EpisodeList';
 import Main  from './Main';
 import ArtistUpload from './service/ArtistUpload';
 import MangaUpload from './service/MangaUpload';
+import EpisodeUploadList from './service/EpisodeUploadList';
 import EpisodeUpload from './service/EpisodeUpload';
 import Header from './Header';
+
 const Router = () => {
     return (
       <BrowserRouter>
@@ -21,7 +23,9 @@ const Router = () => {
             
             <Route path="/upload/artist/list" element={<ArtistUpload />} />
             <Route path="/upload/artist/:artistId" element= {<MangaUpload /> } />
+            <Route path="/upload/manga/:mangaId" element={<EpisodeUploadList />} />
             <Route path="/upload/episode/:mangaId" element={<EpisodeUpload />} />
+            
           </Routes>
       </BrowserRouter>
     );

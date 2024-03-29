@@ -39,18 +39,17 @@ const MangaUpload = () => {
 
         const upload = new AWS.S3.ManagedUpload({
             params: {
-                Bucket: bucket, // 버킷 이름
-                Key: `thumbnails/${title}.jpeg`, // 유저 아이디
+                Bucket: 'yuruyuri', // 버킷 이름
+                Key: `thumbnails/${file.name}`, // 유저 아이디
                 Body: file, // 파일 객체
             },
         });
 
         const promise = upload.promise();
-        promise.then(()=>{
-            const thumbnailUrl=`https://yuruyuri.s3.ap-northeast-2.amazonaws.com/thumbnails/${title}.jpeg`;
-            createManga(thumbnailUrl);
+        promise.then((data)=>{
+            createManga(data.Location);
         });
-      };
+    };
 
 
     const handleChange=(e)=>{
@@ -60,8 +59,7 @@ const MangaUpload = () => {
 
 
     const createManga= (thumbnailUrl) =>{
-        if(title.length===0) return;
-        console.log(thumbnailUrl);
+
         axios
             .post("http://localhost:8080/manga", { artistId, title, content , thumbnailUrl })
             .then(() => {
@@ -98,7 +96,7 @@ const MangaUpload = () => {
         {mangaList.map((manga) => (
             <div>
                 <img src={manga.thumbnailUrl} width="100" height="100" /> 
-                <Link to={`/upload/episode/${manga.mangaId}`}> <h3>{manga.title}</h3> </Link>
+                <Link to={`/upload/manga/${manga.mangaId}`}> <h3>{manga.title}</h3> </Link> 
                 <p>{manga.content}</p>
                 <button onClick={(event) => deleteManga(event, manga.mangaId)}>삭제</button>
             </div>
