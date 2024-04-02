@@ -25,7 +25,11 @@ const EpisodeUploadList = () => {
         <h2>에피소드 리스트</h2>
         <ul>
             {episodeList.map((episode) => (
-                <li>{episode.title} <button onClick={(event)=>deleteEpisode(event,episode.episodeId)}>삭제</button></li>
+                <li>
+                    {episode.title}
+                    <Link to={`/update/episode/${params.mangaId}/${episode.episodeId}`}>수정</Link>
+                    <button onClick={(event)=>deleteEpisode(event,episode.episodeId)}>삭제</button>
+                </li>
             ))}
         </ul>
         <Link to={`/upload/episode/${params.mangaId}`}><h3>새 에피소드 업로드</h3></Link>

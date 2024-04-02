@@ -51,7 +51,6 @@ const MangaUpload = () => {
         });
     };
 
-
     const handleChange=(e)=>{
         setFile(e.target.files[0]);
         setPreviewUrl(URL.createObjectURL(e.target.files[0]));
@@ -82,7 +81,6 @@ const MangaUpload = () => {
     };
 
     const deleteManga= (event, mangaId) =>{
-        
         axios.delete(`http://localhost:8080/manga/${mangaId}`)
         .then(() =>{
             getMangaList();
@@ -98,6 +96,7 @@ const MangaUpload = () => {
                 <img src={manga.thumbnailUrl} width="100" height="100" /> 
                 <Link to={`/upload/manga/${manga.mangaId}`}> <h3>{manga.title}</h3> </Link> 
                 <p>{manga.content}</p>
+                <Link to={`/update/manga/${params.artistId}/${manga.mangaId}`}> <p>수정</p> </Link> 
                 <button onClick={(event) => deleteManga(event, manga.mangaId)}>삭제</button>
             </div>
         ))}

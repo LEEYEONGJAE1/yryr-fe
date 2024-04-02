@@ -26,26 +26,35 @@ const MangaUpdate = () => {
         setPreviewUrl(URL.createObjectURL(e.target.files[0]));
     }
 
-    const uploadFile = async () => {
-        if(previewUrl.length==0) return;
+    const uploadFile = () => {
+        if(title.length===0) return;
+
         AWS.config.update({
-            region: "ap-northeast-2",
+            region: 'yuruyuri',
             accessKeyId: process.env.REACT_APP_AWS_ACCESS_KEY,
             secretAccessKey: process.env.REACT_APP_AWS_SECRET_ACCESS_KEY,
         });
 
-        setThumbnailUrl(await new AWS.S3.ManagedUpload({
+        if(previewUrl.length==0) {
+            updateManga(thumbnailUrl);
+            return;
+        }
+
+        const upload = new AWS.S3.ManagedUpload({
             params: {
-                Bucket: 'yuruyuri',
-                Key: `thumbnails/${file.name}`, 
-                Body: file, 
+                Bucket: 'yuruyuri', // 버킷 이름
+                Key: `thumbnails/${file.name}`, // 유저 아이디
+                Body: file, // 파일 객체
             },
-        }).promise().Location);
+        });
+
+        const promise = upload.promise();
+        promise.then((data)=>{
+            updateManga(data.Location);
+        });
     };
 
-    const updateManga= ()=>{
-        console.log(previewUrl.length);
-        uploadFile();
+    const updateManga= (thumbnailUrl)=>{
         axios.put(`http://localhost:8080/manga/${params.mangaId}`, { title, content, thumbnailUrl })
         .then(()=>{navigate(`/upload/artist/${params.artistId}`)});
     }
@@ -62,7 +71,7 @@ const MangaUpdate = () => {
             <br></br>
             <input type="file" onChange={handleChange} />
             <img src={previewUrl} />
-            <button onClick={updateManga}>만화 수정</button>
+            <button onClick={uploadFile}>만화 수정</button>
           </div>
     );
   };

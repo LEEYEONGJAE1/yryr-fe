@@ -67,6 +67,7 @@ const Viewer = () => {
 
   return (
     <div>
+    <h2>{episode.title}</h2>
     <Container>
       <ImageList>
       {imageUrls.map((imageurl) => (

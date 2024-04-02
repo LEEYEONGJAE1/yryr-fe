@@ -31,7 +31,7 @@ const Router = () => {
             
             <Route path="/update/artist/:artistId" element={<ArtistUpdate />} />
             <Route path="/update/manga/:artistId/:mangaId" element={<MangaUpdate/>}/>
-            <Route path="/update/episode/:episodeId" element={<EpisodeUpdate/>} />
+            <Route path="/update/episode/:mangaId/:episodeId" element={<EpisodeUpdate/>} />
 
           </Routes>
       </BrowserRouter>

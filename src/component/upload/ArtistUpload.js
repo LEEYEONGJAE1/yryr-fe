@@ -47,6 +47,7 @@ const ArtistUpload = () => {
                 <div>
                     <Link to={`/upload/artist/${artist.artistId}`}> <h3>{artist.name}</h3></Link>
                     <p>{artist.content}</p>
+                    <Link to={`/update/artist/${artist.artistId}`}> <p>수정</p> </Link>
                     <button onClick={(event) => deleteArtist(event, artist.artistId)}>삭제</button>
                 </div>
             ))}
