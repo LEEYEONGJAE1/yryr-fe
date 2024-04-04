@@ -1,4 +1,5 @@
 import {BrowserRouter, Routes, Route} from 'react-router-dom';
+import { useState, createContext } from "react";
 import Viewer from './upload/Viewer';
 import MangaList from './list/MangaList';
 import EpisodeList from './list/EpisodeList';
@@ -11,6 +12,8 @@ import ArtistUpdate from './update/ArtistUpdate';
 import MangaUpdate from './update/MangaUpdate';
 import EpisodeUpdate from './update/EpisodeUpdate';
 import Header from './Header';
+import SignUp from './login/SignUp';
+import SignIn from './login/SignIn';
 
 const Router = () => {
     return (
@@ -18,6 +21,9 @@ const Router = () => {
           <Header></Header>
           <Routes>
             <Route path="/" element={<Main />} />
+
+            <Route path="/signup" element={<SignUp/>}/>
+            <Route path="/signin" element={<SignIn/>}/>
 
             <Route path="/upload/artist/list" element={<ArtistUpload />} />
             <Route path="/upload/artist/:artistId" element= {<MangaUpload /> } />

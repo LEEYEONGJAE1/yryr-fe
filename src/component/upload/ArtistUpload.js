@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from "react-router-dom";
+import * as JwtToken from '../JwtToken'
 
 const ArtistUpload = () => {
     const [artistList, setArtistList]=useState([]);
@@ -13,6 +14,7 @@ const ArtistUpload = () => {
     
     const createArtist = () => {
         if(name.length===0) return;
+        JwtToken.setAccessToken();
         axios
             .post("http://localhost:8080/artist", { name, content })
             .then(() => {
