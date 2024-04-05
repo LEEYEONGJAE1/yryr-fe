@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import JSZip from 'jszip';
 import { useParams, useNavigate } from 'react-router-dom';
-import AWS from "aws-sdk";
+import { uploadS3} from '../aws/S3';
+import * as JwtToken from '../JwtToken'
 
 const EpisodeUpload = () => {
     const [zipfile, setZipfile]=useState();
@@ -13,46 +14,25 @@ const EpisodeUpload = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
+        JwtToken.setAccessToken();
         axios.get(`http://localhost:8080/manga/${params.mangaId}`)
         .then((response) => {
             setManga(response.data);
         });
      }, []);
 
-    const createManga=(jsonUrl)=>{
-        console.log(title);
-        axios
-            .post("http://localhost:8080/episode", { mangaId: params.mangaId, title: title, jsonUrl: jsonUrl })
-            .then(() => {
-                navigate(`/upload/manga/${params.mangaId}`);
-            })
-            .catch((error) => {
-                console.error(error);
-            });
+    const createEpisode=async ()=>{
+        const response=await axios.post("http://localhost:8080/episode", { mangaId: params.mangaId, title: title });
+        uploadFile(response.data.episodeId);
+        navigate(`/upload/manga/${params.mangaId}`);
     }
 
-    const uploadFile = () => {
-        const region = "ap-northeast-2";
-        AWS.config.update({
-            region: region,
-            accessKeyId: process.env.REACT_APP_AWS_ACCESS_KEY,
-            secretAccessKey: process.env.REACT_APP_AWS_SECRET_ACCESS_KEY,
-        });
-
-        const upload = new AWS.S3.ManagedUpload({
-            params: {
-                Bucket: 'yuruyuri', 
-                Key: `mangafile/${manga.title}/${zipfile.name}`,
-                Body: zipfile, // 파일 객체
-            },
-        });
-
-        const promise = upload.promise();
-        promise.then((data)=>{
-            createManga(data.Location);
-        });
+    const uploadFile =async (episodeId) => {
+        const key=`mangafile/${manga.mangaId}/${episodeId}.zip`;
+        const response= await uploadS3(key,zipfile);
+        await axios.put(`http://localhost:8080/episode/${episodeId}`,{ title: title , jsonUrl:response.Location});
     };
-
+    
     const onFileChange = (e) => {
         setZipfile(e.target.files[0]);
         const file=e.target.files[0];
@@ -82,7 +62,7 @@ const EpisodeUpload = () => {
             ))}
         </ul>
         <p>등록 전, 에피소드 제목과 이미지 순서를 확인해 주세요.</p>
-        <button onClick={uploadFile}>에피소드 등록</button>
+        <button onClick={createEpisode}>에피소드 등록</button>
         </div>
     );
 };

@@ -1,18 +1,22 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import {LoginContext} from './LoginProvider';
+import * as JwtToken from '../JwtToken';
 
 const SignIn = () => {
     const [username,setUsername]=useState("");
     const [password,setPassword]=useState("");
+
+    const {isLoggedIn,setIsLoggedIn}=useContext(LoginContext);
+
     const navigate = useNavigate();
 
     const signin=async ()=>{
         const response = await axios.post(`http://localhost:8080/member/signin`,{username,password});
-        axios.defaults.headers.common[
-            "Authorization"
-          ] = `Bearer ${response.data.accessToken}`;
         localStorage.setItem('refreshToken',response.data.refreshToken);
+        localStorage.setItem('accessToken',response.data.accessToken);
+        setIsLoggedIn(true);
         navigate('/');
     };
     

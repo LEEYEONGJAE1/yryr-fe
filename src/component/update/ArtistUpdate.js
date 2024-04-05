@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import * as JwtToken from '../JwtToken'
+
 const ArtistUpdate = () => {
     const [name,setName]=useState();
     const [content,setContent]=useState("");
@@ -8,6 +10,7 @@ const ArtistUpdate = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
+        JwtToken.setAccessToken();
         axios.get(`http://localhost:8080/artist/${params.artistId}`)
             .then((response) => {
             setName(response.data.name);

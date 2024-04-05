@@ -9,36 +9,26 @@ const ArtistUpload = () => {
     const [content, setContent]=useState("");
 
     useEffect(() => {
-        getArtistList();
-      }, []);
-    
-    const createArtist = () => {
-        if(name.length===0) return;
         JwtToken.setAccessToken();
-        axios
-            .post("http://localhost:8080/artist", { name, content })
-            .then(() => {
-                getArtistList();
-                setName("");
-                setContent("");
-            })
-            .catch((error) => {
-                console.error(error);
-            });
+        getArtistList();
+    }, []);
+
+    const createArtist = async () => {
+        if(name.length===0) return;
+        await axios.post("http://localhost:8080/artist", { name, content });
+        getArtistList();
+        setName("");
+        setContent("");
     };
 
-    const getArtistList= ()=>{
-        axios.get('http://localhost:8080/artist/list')
-            .then((response) => {
-                setArtistList(response.data);
-            });
+    const getArtistList= async ()=>{
+        const response= await axios.get('http://localhost:8080/artist/list');
+        setArtistList(response.data);
     };
 
-    const deleteArtist=(event,artistId)=>{
-        axios.delete(`http://localhost:8080/artist/${artistId}`)
-        .then(() =>{
-            getArtistList();
-        });
+    const deleteArtist=async (event,artistId)=>{
+        await axios.delete(`http://localhost:8080/artist/${artistId}`);
+        getArtistList();
     };
 
     return (

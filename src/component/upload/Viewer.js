@@ -29,36 +29,32 @@ const Viewer = () => {
   const [episode, setEpisode]=useState([]);
   const params=useParams();
 
-  const getEpisode= () => {
-    axios.get(`http://localhost:8080/episode/${params.episodeId}`)
-    .then((response) => {
-      setEpisode(response.data);
-      showEpisodeImages(response.data.jsonUrl);
-    });
+  const getEpisode= async() => {
+    const response= await axios.get(`http://localhost:8080/episode/${params.episodeId}`)
+    setEpisode(response.data);
+    showEpisodeImages(response.data.jsonUrl);
   }
-  const showEpisodeImages=(zipUrl)=>{
-    axios.get(zipUrl, {
-      responseType: 'arraybuffer'
-    }).then((response) => {
-      const arrayBuffer = response.data;
-      JSZip.loadAsync(arrayBuffer).then(async (zip) => {
-        const files = zip.files;
-        const imageFiles = [];
-        // 이미지 파일만 추출
-        for (const fileName of Object.keys(files)) {
-          const file = files[fileName];
-          if (file.name.match(/\.(jpg|jpeg|png|gif)$/)) {
-            imageFiles.push(file);
-          }
-        }
 
-        // 이미지 URL 목록 생성
-        setImageUrls( await Promise.all(imageFiles.map(async (file) => {
-            const data = await file.async('blob').then((blob) => {return URL.createObjectURL(blob); });
-            return data;
-        })));
-      });
+  const showEpisodeImages=async (zipUrl)=>{
+    const response= await axios.get(zipUrl, {
+      responseType: 'arraybuffer'
     });
+    const arrayBuffer = response.data;
+    const zip = await JSZip.loadAsync(arrayBuffer);
+    const files = zip.files;
+    const imageFiles = [];
+    // 이미지 파일만 추출
+    for (const fileName of Object.keys(files)) {
+      const file = files[fileName];
+      if (file.name.match(/\.(jpg|jpeg|png|gif)$/)) {
+        imageFiles.push(file);
+      }
+    }
+    // 이미지 URL 목록 생성
+    setImageUrls( await Promise.all(imageFiles.map(async (file) => {
+        const data = await file.async('blob').then((blob) => {return URL.createObjectURL(blob); });
+        return data;
+    })));
   }
 
   useEffect(() => {

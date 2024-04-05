@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import AWS from "aws-sdk";
+import * as JwtToken from '../JwtToken'
 
 const MangaUpdate = () => {
     const [previewUrl, setPreviewUrl]=useState("");
@@ -13,6 +14,7 @@ const MangaUpdate = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
+        JwtToken.setAccessToken();
         axios.get(`http://localhost:8080/manga/${params.mangaId}`)
             .then((response) => {
                 setTitle(response.data.title);
@@ -25,7 +27,25 @@ const MangaUpdate = () => {
         setFile(e.target.files[0]);
         setPreviewUrl(URL.createObjectURL(e.target.files[0]));
     }
+    const updateFile= ()=>{
+        deleteFile(thumbnailUrl);
+    }
+    const uploadFile = async(mangaId) => {
+        const key=`thumbnails/${mangaId}`;
+        const thumbnailUrl=await uploadS3(key,file);
+        const response=await axios.get(`http://localhost:8080/manga/${mangaId}`);
+        await axios.put(`http://localhost:8080/manga/${mangaId}`, { title:response.data.title, content:response.data.content, thumbnailUrl:thumbnailUrl.Location });
+        getMangaList();
+    };
 
+    const deleteFile = async (thumbnailUrl)=>{
+        if(thumbnailUrl===null) return;
+        const s3url='https://yuruyuri.s3.ap-northeast-2.amazonaws.com/';
+        const key=thumbnailUrl.substring(s3url.length);
+       
+        deleteS3(key);
+    }
+    /*
     const uploadFile = () => {
         if(title.length===0) return;
 
@@ -52,7 +72,7 @@ const MangaUpdate = () => {
         promise.then((data)=>{
             updateManga(data.Location);
         });
-    };
+    };*/
 
     const updateManga= (thumbnailUrl)=>{
         axios.put(`http://localhost:8080/manga/${params.mangaId}`, { title, content, thumbnailUrl })
@@ -71,7 +91,7 @@ const MangaUpdate = () => {
             <br></br>
             <input type="file" onChange={handleChange} />
             <img src={previewUrl} />
-            <button onClick={uploadFile}>만화 수정</button>
+            <button onClick={updateFile}>만화 수정</button>
           </div>
     );
   };

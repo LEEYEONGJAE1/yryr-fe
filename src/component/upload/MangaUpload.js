@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams, Link } from 'react-router-dom';
-import AWS from "aws-sdk";
+import {deleteS3, uploadS3} from '../aws/S3';
+import * as JwtToken from '../JwtToken'
 
 const MangaUpload = () => {
     const [artist, setArtist]=useState([]);
@@ -14,77 +15,54 @@ const MangaUpload = () => {
     const params=useParams();
     const artistId=params.artistId;
     useEffect(() => {
-
-       getArtist();
-       getMangaList();
+        JwtToken.setAccessToken();
+        getArtist();
+        getMangaList();
     }, []);
 
-    const getArtist= ()=>{
-        axios.get(`http://localhost:8080/artist/${artistId}`)
-        .then((response) => {
-          setArtist(response.data);
-        });
+    const getArtist= async ()=>{
+        const response= await axios.get(`http://localhost:8080/artist/${artistId}`);
+        setArtist(response.data);
     };
 
-    const uploadFile = () => {
-        const region = "ap-northeast-2";
-        const bucket = process.env.S3_BUCKET_NAME;
-        if(title.length===0) return;
-
-        AWS.config.update({
-            region: region,
-            accessKeyId: process.env.REACT_APP_AWS_ACCESS_KEY,
-            secretAccessKey: process.env.REACT_APP_AWS_SECRET_ACCESS_KEY,
-        });
-
-        const upload = new AWS.S3.ManagedUpload({
-            params: {
-                Bucket: 'yuruyuri', // 버킷 이름
-                Key: `thumbnails/${file.name}`, // 유저 아이디
-                Body: file, // 파일 객체
-            },
-        });
-
-        const promise = upload.promise();
-        promise.then((data)=>{
-            createManga(data.Location);
-        });
+    const uploadFile = async(mangaId) => {
+        const key=`thumbnails/${mangaId}`;
+        const thumbnailUrl=await uploadS3(key,file);
+        const response=await axios.get(`http://localhost:8080/manga/${mangaId}`);
+        await axios.put(`http://localhost:8080/manga/${mangaId}`, { title:response.data.title, content:response.data.content, thumbnailUrl:thumbnailUrl.Location });
+        getMangaList();
     };
+
+    const deleteFile = async (thumbnailUrl)=>{
+        if(thumbnailUrl===null) return;
+        const s3url='https://yuruyuri.s3.ap-northeast-2.amazonaws.com/';
+        const key=thumbnailUrl.substring(s3url.length);
+       
+        deleteS3(key);
+    }
 
     const handleChange=(e)=>{
         setFile(e.target.files[0]);
         setPreviewUrl(URL.createObjectURL(e.target.files[0]));
     }
 
-
-    const createManga= (thumbnailUrl) =>{
-
-        axios
-            .post("http://localhost:8080/manga", { artistId, title, content , thumbnailUrl })
-            .then(() => {
-                getMangaList();
-                setTitle("");
-                setContent("");
-                setPreviewUrl("");
-            })
-            .catch((error) => {
-                console.error(error);
-            });
+    const createManga= async () =>{
+        const response = await axios.post("http://localhost:8080/manga", { artistId, title, content });
+        await uploadFile(response.data.mangaId);
+        setTitle("");
+        setContent("");
+        setPreviewUrl("");
     }
     
-    
-    const getMangaList = () => {
-        axios.get(`http://localhost:8080/manga/artist/${params.artistId}`)
-        .then((response)=>{
-            setMangaList(response.data);
-        });
+    const getMangaList = async () => {
+        const response=await axios.get(`http://localhost:8080/manga/artist/${params.artistId}`);
+        setMangaList(response.data);
     };
 
-    const deleteManga= (event, mangaId) =>{
-        axios.delete(`http://localhost:8080/manga/${mangaId}`)
-        .then(() =>{
-            getMangaList();
-        });
+    const deleteManga=async (event, manga) =>{
+        deleteFile(manga.thumbnailUrl);
+        await axios.delete(`http://localhost:8080/manga/${manga.mangaId}`);
+        getMangaList();
     };
     
     return (
@@ -97,7 +75,7 @@ const MangaUpload = () => {
                 <Link to={`/upload/manga/${manga.mangaId}`}> <h3>{manga.title}</h3> </Link> 
                 <p>{manga.content}</p>
                 <Link to={`/update/manga/${params.artistId}/${manga.mangaId}`}> <p>수정</p> </Link> 
-                <button onClick={(event) => deleteManga(event, manga.mangaId)}>삭제</button>
+                <button onClick={(event) => deleteManga(event, manga)}>삭제</button>
             </div>
         ))}
 
@@ -107,7 +85,7 @@ const MangaUpload = () => {
         <br></br>
         <input type="file" onChange={handleChange} />
         <img src={previewUrl} />
-        <button onClick={uploadFile}>만화 등록</button>
+        <button onClick={createManga}>만화 등록</button>
     </div>
     );
 };

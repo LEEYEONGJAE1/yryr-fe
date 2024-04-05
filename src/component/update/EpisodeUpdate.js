@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import JSZip from 'jszip';
 import AWS from "aws-sdk";
+import * as JwtToken from '../JwtToken'
 
 const EpisodeUpdate = () => {
     const [manga,setManga]=useState([]);
@@ -14,6 +15,7 @@ const EpisodeUpdate = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
+        JwtToken.setAccessToken();
         axios.get(`http://localhost:8080/episode/${params.episodeId}`)
         .then((response) => {
             setTitle(response.data.title);

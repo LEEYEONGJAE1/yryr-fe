@@ -17,7 +17,6 @@ const SignUp = () => {
         if(response.status===200){
             navigate('/');
         }
-        console.log(response);
     };
 
     const checkPassword=()=>{
