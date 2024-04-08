@@ -15,19 +15,19 @@ const ArtistUpload = () => {
 
     const createArtist = async () => {
         if(name.length===0) return;
-        await axios.post("http://localhost:8080/artist", { name, content });
+        await axios.post(`${process.env.REACT_APP_SERVER_URL}/artist`, { name, content });
         getArtistList();
         setName("");
         setContent("");
     };
 
     const getArtistList= async ()=>{
-        const response= await axios.get('http://localhost:8080/artist/list');
+        const response= await axios.get(`${process.env.REACT_APP_SERVER_URL}/artist/list`);
         setArtistList(response.data);
     };
 
     const deleteArtist=async (event,artistId)=>{
-        await axios.delete(`http://localhost:8080/artist/${artistId}`);
+        await axios.delete(`${process.env.REACT_APP_SERVER_URL}/artist/${artistId}`);
         getArtistList();
     };
 

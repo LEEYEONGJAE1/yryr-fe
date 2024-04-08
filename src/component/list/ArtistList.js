@@ -10,7 +10,7 @@ const ArtistList = () => {
     }, []);
     
     const getArtistList= ()=>{
-        axios.get('http://localhost:8080/artist/list')
+        axios.get(`${process.env.REACT_APP_SERVER_URL}/artist/list`)
             .then((response) => {
                 setArtistList(response.data);
             });

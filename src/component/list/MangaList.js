@@ -10,7 +10,7 @@ const MangaList = () => {
       }, []);
     
     const getMangaList=()=>{
-        axios.get(`http://localhost:8080/manga/list`)
+        axios.get(`${process.env.REACT_APP_SERVER_URL}/manga/list`)
             .then((response)=>{
                 setMangaList(response.data);
             });
@@ -18,7 +18,7 @@ const MangaList = () => {
 
     const showSearchResults=(keyword)=>{
         if(keyword.length>=2){
-            axios.get(`http://localhost:8080/manga/search/title/${keyword}`)
+            axios.get(`${process.env.REACT_APP_SERVER_URL}/manga/search/title/${keyword}`)
             .then((response)=>{
                 setMangaList(response.data);
             });

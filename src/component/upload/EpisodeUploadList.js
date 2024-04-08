@@ -14,12 +14,12 @@ const EpisodeUploadList = () => {
     }, []);
 
     const getEpisodeList=async ()=>{
-        const response = await axios.get(`http://localhost:8080/episode/manga/${params.mangaId}`);
+        const response = await axios.get(`${process.env.REACT_APP_SERVER_URL}/episode/manga/${params.mangaId}`);
         setEpisodeList(response.data);
     };
 
     const deleteEpisode=async(event,episode)=>{
-        await axios.delete(`http://localhost:8080/episode/${episode.episodeId}`);
+        await axios.delete(`${process.env.REACT_APP_SERVER_URL}/episode/${episode.episodeId}`);
         const s3url='https://yuruyuri.s3.ap-northeast-2.amazonaws.com/';
         const key=episode.jsonUrl.substring(s3url.length);
         console.log(key);

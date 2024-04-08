@@ -2,7 +2,7 @@ import axios from 'axios';
 
 export const requestAccessToken = async (refreshToken) => {
   return await axios
-    .post(`http://localhost:8080/token/refresh/`, {
+    .post(`${process.env.REACT_APP_SERVER_URL}/token/refresh/`, {
       refreshToken: refreshToken,
     
     })

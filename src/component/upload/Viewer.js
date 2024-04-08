@@ -30,7 +30,7 @@ const Viewer = () => {
   const params=useParams();
 
   const getEpisode= async() => {
-    const response= await axios.get(`http://localhost:8080/episode/${params.episodeId}`)
+    const response= await axios.get(`${process.env.REACT_APP_SERVER_URL}/episode/${params.episodeId}`)
     setEpisode(response.data);
     showEpisodeImages(response.data.jsonUrl);
   }

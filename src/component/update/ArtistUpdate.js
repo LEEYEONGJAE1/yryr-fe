@@ -11,16 +11,16 @@ const ArtistUpdate = () => {
 
     useEffect(() => {
         JwtToken.setAccessToken();
-        axios.get(`http://localhost:8080/artist/${params.artistId}`)
+        axios.get(`${process.env.REACT_APP_SERVER_URL}/artist/${params.artistId}`)
             .then((response) => {
             setName(response.data.name);
             setContent(response.data.content);
         });
     }, []);
 
-    const updateArtist=()=>{
-        axios.put(`http://localhost:8080/artist/${params.artistId}`,{name:name,content:content})
-        .then(()=>{navigate(`/upload/artist/list`)});
+    const updateArtist=async ()=>{
+       await axios.put(`${process.env.REACT_APP_SERVER_URL}/artist/${params.artistId}`,{name:name,content:content});
+        navigate(`/upload/artist/list`);
     };
     
     return (

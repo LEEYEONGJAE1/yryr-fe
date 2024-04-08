@@ -6,11 +6,11 @@ const EpisodeList = () => {
     const [episodeList,setEpisodeList]=useState([]);
     const params=useParams();
     useEffect(() => {
-    axios.get(`http://localhost:8080/episode/manga/${params.mangaId}`)
-    .then((response) => {
-        setEpisodeList(response.data);
-    });
-  }, []);
+        axios.get(`${process.env.REACT_APP_SERVER_URL}/episode/manga/${params.mangaId}`)
+        .then((response) => {
+            setEpisodeList(response.data);
+        });
+    }, []);
   
     return (
         <div>

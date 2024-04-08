@@ -21,15 +21,15 @@ const MangaUpload = () => {
     }, []);
 
     const getArtist= async ()=>{
-        const response= await axios.get(`http://localhost:8080/artist/${artistId}`);
+        const response= await axios.get(`${process.env.REACT_APP_SERVER_URL}/artist/${artistId}`);
         setArtist(response.data);
     };
 
     const uploadFile = async(mangaId) => {
         const key=`thumbnails/${mangaId}`;
         const thumbnailUrl=await uploadS3(key,file);
-        const response=await axios.get(`http://localhost:8080/manga/${mangaId}`);
-        await axios.put(`http://localhost:8080/manga/${mangaId}`, { title:response.data.title, content:response.data.content, thumbnailUrl:thumbnailUrl.Location });
+        const response=await axios.get(`${process.env.REACT_APP_SERVER_URL}/manga/${mangaId}`);
+        await axios.put(`${process.env.REACT_APP_SERVER_URL}/manga/${mangaId}`, { title:response.data.title, content:response.data.content, thumbnailUrl:thumbnailUrl.Location });
         getMangaList();
     };
 
@@ -47,7 +47,7 @@ const MangaUpload = () => {
     }
 
     const createManga= async () =>{
-        const response = await axios.post("http://localhost:8080/manga", { artistId, title, content });
+        const response = await axios.post(`${process.env.REACT_APP_SERVER_URL}/manga`, { artistId, title, content });
         await uploadFile(response.data.mangaId);
         setTitle("");
         setContent("");
@@ -55,13 +55,13 @@ const MangaUpload = () => {
     }
     
     const getMangaList = async () => {
-        const response=await axios.get(`http://localhost:8080/manga/artist/${params.artistId}`);
+        const response=await axios.get(`${process.env.REACT_APP_SERVER_URL}/manga/artist/${params.artistId}`);
         setMangaList(response.data);
     };
 
     const deleteManga=async (event, manga) =>{
         deleteFile(manga.thumbnailUrl);
-        await axios.delete(`http://localhost:8080/manga/${manga.mangaId}`);
+        await axios.delete(`${process.env.REACT_APP_SERVER_URL}/manga/${manga.mangaId}`);
         getMangaList();
     };
     

@@ -13,7 +13,7 @@ const SignUp = () => {
 
     const signup=async ()=>{
         if(checkPassword()===false) return;
-        const response= await axios.post(`http://localhost:8080/member/signup`,{username,password,nickname});
+        const response= await axios.post(`${process.env.REACT_APP_SERVER_URL}/member/signup`,{username,password,nickname});
         if(response.status===200){
             navigate('/');
         }

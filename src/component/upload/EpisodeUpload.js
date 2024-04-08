@@ -15,14 +15,14 @@ const EpisodeUpload = () => {
 
     useEffect(() => {
         JwtToken.setAccessToken();
-        axios.get(`http://localhost:8080/manga/${params.mangaId}`)
+        axios.get(`${process.env.REACT_APP_SERVER_URL}/manga/${params.mangaId}`)
         .then((response) => {
             setManga(response.data);
         });
      }, []);
 
     const createEpisode=async ()=>{
-        const response=await axios.post("http://localhost:8080/episode", { mangaId: params.mangaId, title: title });
+        const response=await axios.post(`${process.env.REACT_APP_SERVER_URL}/episode`, { mangaId: params.mangaId, title: title });
         uploadFile(response.data.episodeId);
         navigate(`/upload/manga/${params.mangaId}`);
     }
@@ -30,7 +30,7 @@ const EpisodeUpload = () => {
     const uploadFile =async (episodeId) => {
         const key=`mangafile/${manga.mangaId}/${episodeId}.zip`;
         const response= await uploadS3(key,zipfile);
-        await axios.put(`http://localhost:8080/episode/${episodeId}`,{ title: title , jsonUrl:response.Location});
+        await axios.put(`${process.env.REACT_APP_SERVER_URL}/episode/${episodeId}`,{ title: title , jsonUrl:response.Location});
     };
     
     const onFileChange = (e) => {

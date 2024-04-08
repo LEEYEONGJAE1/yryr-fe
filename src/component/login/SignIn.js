@@ -13,7 +13,7 @@ const SignIn = () => {
     const navigate = useNavigate();
 
     const signin=async ()=>{
-        const response = await axios.post(`http://localhost:8080/member/signin`,{username,password});
+        const response = await axios.post(`${process.env.REACT_APP_SERVER_URL}/member/signin`,{username,password});
         localStorage.setItem('refreshToken',response.data.refreshToken);
         localStorage.setItem('accessToken',response.data.accessToken);
         setIsLoggedIn(true);
