@@ -20,7 +20,7 @@ const EpisodeUploadList = () => {
 
     const deleteEpisode=async(event,episode)=>{
         await axios.delete(`${process.env.REACT_APP_SERVER_URL}/episode/${episode.episodeId}`);
-        const s3url='https://yuruyuri.s3.ap-northeast-2.amazonaws.com/';
+        const s3url=`https://${process.env.REACT_APP_AWS_S3_BUCKET_NAME}.s3.ap-northeast-2.amazonaws.com/`;
         const key=episode.jsonUrl.substring(s3url.length);
         console.log(key);
         await deleteS3(key);

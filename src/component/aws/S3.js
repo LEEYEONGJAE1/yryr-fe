@@ -9,7 +9,7 @@ const client = new S3Client({
     }
 });
 
-const bucket = 'yuruyuri';
+const bucket = process.env.REACT_APP_AWS_S3_BUCKET_NAME;
 
 export const uploadS3=async (key,file) =>{
     const upload = new Upload({

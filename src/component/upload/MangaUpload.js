@@ -35,7 +35,7 @@ const MangaUpload = () => {
 
     const deleteFile = async (thumbnailUrl)=>{
         if(thumbnailUrl===null) return;
-        const s3url='https://yuruyuri.s3.ap-northeast-2.amazonaws.com/';
+        const s3url=`https://${process.env.REACT_APP_AWS_S3_BUCKET_NAME}.s3.ap-northeast-2.amazonaws.com/`;
         const key=thumbnailUrl.substring(s3url.length);
        
         deleteS3(key);
